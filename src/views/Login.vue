@@ -7,11 +7,16 @@
         </transition>
         <section>
             <div class="col1">
-                <h1>Memory</h1>
+                <h1>Memory Game</h1>
                 <p>How far can you go?</p>
             </div>
-            <div class="col2" 
-                :class="{ 'signup-form': !showLoginForm && !showForgotPassword }">
+            <div class="col2" >
+                <transition name="fade">
+                    <div v-if="errorMsg !== ''" class="error-msg">
+                        <p>{{ errorMsg }}</p>
+                    </div>
+                </transition>
+
                 <form v-if="showLoginForm" @submit.prevent>
                     <h1>Welcome Back</h1>
 
@@ -23,16 +28,17 @@
                     <input v-model.trim="loginForm.password" type="password"
                         placeholder="******" id="login_password" />
 
-                    <button @click="login" class="button">Log In</button>
-
-                    <div class="extras">
-                        <a @click="togglePasswordReset">Forgot Password</a>
-                        <a @click="toggleForm">Create Account</a>
+                    <div class="fix-me">
+                        <button @click="login" class="button">Log In</button>
+                        <div class="extras">
+                            <a @click="togglePasswordReset">Forgot Password</a>
+                            <a @click="toggleForm">Create Account</a>
+                        </div>
                     </div>
                 </form>
 
                 <form v-if="!showLoginForm && !showForgotPassword" @submit.prevent>
-                    <h1>HOLA</h1>
+                    <h1>Create An Account</h1>
                     <label for="signup_email">Email</label>
                     <input v-model.trim="signupForm.email" type="text" placeholder="you@email.com"
                         id="signup_email" />
@@ -41,15 +47,17 @@
                     <input v-model.trim="signupForm.password" type="password" 
                         placeholder="min 6 characters" id="signup_password" />
 
-                    <button @click="signup" class="button">Sign Up</button>
-
-                    <div class="extras">
-                        <a @click="toggleForm">Back to Log In</a>
+                    <div class="fix-me">
+                        <button @click="signup" class="button">Sign Up</button>
+                        <div class="extras">
+                            <a @click="toggleForm">Back to Log In</a>
+                        </div>
                     </div>
                 </form>
 
                 <form v-if="showForgotPassword" @submit.prevent class="password-reset">
                     <div v-if="!passwordResetSuccess">
+                    <!-- <div v-if="false"> -->
                         <h1>Reset Password</h1>
                         <p>We will send you an email to reset your password</p>
 
@@ -57,10 +65,12 @@
                         <input v-model.trim="passwordForm.email" type="text"
                             placeholder="you@email.com" id="reset_email" />
 
-                        <button @click="resetPassword" class="button">Submit</button>
+                        <div class="fix-me">
+                            <button @click="resetPassword" class="button">Submit</button>
 
-                        <div class="extras">
-                            <a @click="togglePasswordReset">Back to Log In</a>
+                            <div class="extras">
+                                <a @click="togglePasswordReset">Back to Log In</a>
+                            </div>
                         </div>
                     </div>
                     <div v-else>
@@ -71,11 +81,6 @@
                         </button>
                     </div>
                 </form>
-                <transition name="fade">
-                    <div v-if="errorMsg !== ''" class="error-msg">
-                        <p>{{ errorMsg }}</p>
-                    </div>
-                </transition>
             </div>
         </section>
     </div>
@@ -177,5 +182,14 @@ export default {
 };
 </script>
 
-
+<style lang="scss" scoped>
+.fix-me {
+    display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+    align-items: center;
+    align-content: space-around;
+}
+</style>
 

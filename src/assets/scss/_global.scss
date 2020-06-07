@@ -121,7 +121,8 @@ section {
 }
 
 .error-msg {
-	margin-top: 1rem;
+	margin-top: -5rem;
+	padding-bottom: 2rem;
 	text-align: center;
 	p {
 		color: $error;
@@ -203,11 +204,8 @@ form {
     }
 }
 // transitions
-.fade-enter-active {
+.fade-enter-active, .fade-leave-active {
 	transition: opacity 0.5s;
-}
-.fade-leave-active {
-	transition: opacity 0s;
 }
 
 .fade-enter,

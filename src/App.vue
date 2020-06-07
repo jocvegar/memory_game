@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <div v-if="false" id="nav">
+    <div v-if="currentUser" id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/login">Login</router-link> | 
       <a @click="logout">logout</a>
     </div>
     <router-view/>
@@ -12,9 +11,13 @@
 
 <script>
 const fb = require("@/firebaseConfig.js");
+import { mapState } from "vuex";
 
 export default {
-   methods: {
+  computed: {
+    ...mapState(["currentUser"])
+  },
+  methods: {
     logout() {
       fb.auth.signOut()
         .then(() => {

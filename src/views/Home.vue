@@ -41,6 +41,10 @@
 			</section>
 		</div>
 
+		<section v-if="userProfile && userProfile.level" class="score">
+			highest level: {{userProfile.level}}
+		</section>
+
 		<transition name="fade">
 			<div v-if="userProfile == null" class="c-modal">
 				<div class="c-container">
@@ -180,6 +184,19 @@ export default {
 	justify-content: flex-start;
 	align-items: center;
 	align-content: stretch;
+}
+
+.score {
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: center;
+	align-content: stretch;
+	color: rgba(39, 39, 39, 0.5);
+	position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 form {

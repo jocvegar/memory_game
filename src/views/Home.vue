@@ -1,15 +1,14 @@
 <template>
 	<div id="home">
 		<transition name="fade">
-		<p v-if="showSuccess" class="success">
-			Profile updated!
-		</p>
+			<p v-if="showSuccess" class="success">
+				Profile updated!
+			</p>
 		</transition>
 
 		<section class="title">
 			<h4 class="text-center">Memory Game</h4>
 		</section>
-
 
 		<div v-if="level == 0">
 			<section class="welcome">

@@ -20,6 +20,9 @@
 					Start!
 				</button>
 			</section>
+			<section v-if="userProfile && userProfile.level" class="score">
+				highest level: {{userProfile.level}}
+			</section>
 		</div>
 		<div v-else>
 			<section class="game">
@@ -32,7 +35,7 @@
 				</div>
 				<div v-else>
 					<form @submit.prevent>
-						<input v-model.trim="numberInput" type="text" autofocus @paste.prevent/>
+						<input v-model.trim="numberInput" type="number" autofocus @paste.prevent/>
 						<button @click.prevent="checkNumber" :disabled="numberInput.length == 0" class="button-medium">
 							Go!
 						</button>
@@ -40,10 +43,6 @@
 				</div>
 			</section>
 		</div>
-
-		<section v-if="userProfile && userProfile.level" class="score">
-			highest level: {{userProfile.level}}
-		</section>
 
 		<transition name="fade">
 			<div v-if="userProfile == null" class="c-modal">
@@ -128,7 +127,7 @@ export default {
 
 		},
 		checkNumber() {
-			if (this.numberInput == this.outputRandomNumber) {
+			if (this.numberInput.toString() == this.outputRandomNumber) {
 				this.increaseLevel()
 				this.numberInput = ""
 				this.hint = true

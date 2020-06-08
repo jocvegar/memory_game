@@ -143,7 +143,7 @@ export default {
 			} else {
 				this.tries = this.tries - 1
 				if (this. tries == 0) {
-					if (this.level > this.userProfile.level) {
+					if (this.userProfile.level == null || this.level > this.userProfile.level) {
 						this.updateScore()
 					}
 					this.gameOver = true

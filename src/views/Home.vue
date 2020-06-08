@@ -35,7 +35,7 @@
 				</div>
 				<div v-else>
 					<form @submit.prevent>
-						<input v-model.trim="numberInput" type="number" autofocus @paste.prevent/>
+						<input v-model.trim="numberInput" type="number" v-focus @paste.prevent/>
 						<button @click.prevent="checkNumber" :disabled="numberInput.length == 0" class="button-medium">
 							Go!
 						</button>
@@ -134,7 +134,9 @@ export default {
 			} else {
 				this.tries = this.tries - 1
 				if (this. tries == 0) {
-					this.updateScore()
+					if (this.level > this.userProfile.level) {
+						this.updateScore()
+					}
 					this.gameOver = true
 					this.numberInput = ""
 				} else {
@@ -171,6 +173,14 @@ export default {
 		},
 		increaseLevel() {
 			this.level = this.level + 1
+		}
+	},
+	directives: {
+		focus: {
+			// directive definition
+			inserted: function (el) {
+			el.focus()
+			}
 		}
 	}
 }

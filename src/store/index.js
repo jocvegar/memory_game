@@ -44,30 +44,27 @@ export const store =  new Vuex.Store({
           console.log(err);
         });
     },
-    updateProfile({ state }, data) {
-      let first_name = data["first_name"];
-      let last_name = data.last_name;
+    // updateProfile({ state }, data) {
+    //   let first_name = data["first_name"];
+    //   let last_name = data.last_name;
 
-      fb.usersCollection
-        .doc(state.currentUser.uid)
-        .update({ first_name: first_name, last_name: last_name })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-
+    //   fb.usersCollection
+    //     .doc(state.currentUser.uid)
+    //     .update({ first_name: first_name, last_name: last_name })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // },
     createProfile({ state }, data) {
-      let first_name = data["first_name"];
-      let last_name = data.last_name;
+      // let first_name = data["first_name"];
+      let username = data.username;
 
       fb.usersCollection
         .doc(state.currentUser.uid)
-        .set({ first_name: first_name, last_name: last_name })
+        .set({ username: username })
         .catch(err => {
           console.log(err);
         });
     }
   },
-  modules: {
-  }
 })

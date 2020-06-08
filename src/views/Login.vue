@@ -29,7 +29,7 @@
                         placeholder="******" id="login_password" />
 
                     <div class="fix-me">
-                        <button @click="login" class="button">Log In</button>
+                        <button @click="login" class="button-primary">Log In</button>
                         <div class="extras">
                             <a @click="togglePasswordReset">Forgot Password</a>
                             <a @click="toggleForm">Create Account</a>
@@ -48,7 +48,7 @@
                         placeholder="min 6 characters" id="signup_password" />
 
                     <div class="fix-me">
-                        <button @click="signup" class="button">Sign Up</button>
+                        <button @click="signup" class="button-primary">Sign Up</button>
                         <div class="extras">
                             <a @click="toggleForm">Back to Log In</a>
                         </div>
@@ -66,7 +66,7 @@
                             placeholder="you@email.com" id="reset_email" />
 
                         <div class="fix-me">
-                            <button @click="resetPassword" class="button">Submit</button>
+                            <button @click="resetPassword" class="button-primary">Submit</button>
 
                             <div class="extras">
                                 <a @click="togglePasswordReset">Back to Log In</a>
@@ -76,7 +76,7 @@
                     <div v-else>
                         <h1>Email Sent</h1>
                         <p>check your email for a link to reset your password</p>
-                        <button @click="togglePasswordReset" class="button">
+                        <button @click="togglePasswordReset" class="button-primary">
                             Back to login
                         </button>
                     </div>

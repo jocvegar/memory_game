@@ -1,10 +1,10 @@
 // imports
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;900&display=swap');
 
 // colors
 $primary: #30A0EE;
 $error: #ef5777;
-$success: #1abc9c;
+$success: #42b983;
 $light: #F5F8FA;
 $medium: #657786;
 $dark: #34495E;
@@ -22,7 +22,7 @@ html {
 }
 
 * {
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Merriweather', serif;
 	box-sizing: border-box;
 	transition: 0.15s;
 
@@ -65,7 +65,7 @@ p {
 }
 
 a {
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Merriweather', serif;
 	text-decoration: none;
 	color: $primary;
 	margin: 0;
@@ -79,8 +79,9 @@ a {
 // globals
 section {
 	display: flex;
-	max-width: 1200px;
-	margin: 0 auto;
+	flex-grow: 1;
+	flex-basis: 0;
+	margin: 0 3rem;
 
 	@media screen and (max-width: 742px) {
 		display: block;
@@ -130,7 +131,7 @@ section {
 	}
 }
 
-.button {
+.button-primary {
 	background: $primary;
 	border: 0;
 	outline: 0;
@@ -149,6 +150,75 @@ section {
 
         &:hover {
             background: $primary;
+        }
+    }
+}
+
+.button-success {
+	background: $success;
+	border: 0;
+	outline: 0;
+	color: $white;
+	padding: 0.8rem 1rem;
+	min-width: 150px;
+	font-size: 16px;
+	border-radius: 3px;
+	cursor: pointer;
+
+	&:hover {
+		background: lighten($success, 5%);
+	}
+    &:disabled {
+        opacity: 0.5;
+
+        &:hover {
+            background: $success;
+        }
+    }
+}
+
+.button-error {
+	background: $error;
+	border: 0;
+	outline: 0;
+	color: $white;
+	padding: 0.8rem 1rem;
+	min-width: 150px;
+	font-size: 16px;
+	border-radius: 3px;
+	cursor: pointer;
+
+	&:hover {
+		background: lighten($error, 5%);
+	}
+    &:disabled {
+        opacity: 0.5;
+
+        &:hover {
+            background: $error;
+        }
+    }
+}
+
+.button-medium {
+	background: $medium;
+	border: 0;
+	outline: 0;
+	color: $white;
+	padding: 0.8rem 1rem;
+	min-width: 150px;
+	font-size: 16px;
+	border-radius: 3px;
+	cursor: pointer;
+
+	&:hover {
+		background: lighten($medium, 5%);
+	}
+    &:disabled {
+        opacity: 0.5;
+
+        &:hover {
+            background: $medium;
         }
     }
 }

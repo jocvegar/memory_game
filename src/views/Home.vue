@@ -27,7 +27,7 @@
 		<div v-else>
 			<section class="game">
 				<div v-if="hint">
-					<h3>{{outputRandomNumber}}</h3>
+					<h3>{{animatedNumber}}</h3>
 					<br>
 					<button @click="hint = false" class="button-success">
 						OK
@@ -104,7 +104,8 @@ export default {
 			hint: true,
 			tries: 2,
 			showWrongAnswer: false,
-			gameOver: false
+			gameOver: false,
+    		animatedNumberPlaceHolder: 0
 		}
 	},
 	computed: {
@@ -113,6 +114,14 @@ export default {
 			let num1 = Math.floor(Math.random() * 1000000000000000000000).toString()
 			let num2 = Math.floor(Math.random() * 1000000000000000000000).toString()
 			return (num1+num2).slice(0,this.level)
+		},
+		animatedNumber: function() {
+      		return this.animatedNumberPlaceHolder.toFixed(0);
+    	}	
+	},
+	watch: {
+		outputRandomNumber: function(newValue) {
+			gsap.to(this.$data, { duration: 0.5, animatedNumberPlaceHolder: newValue });
 		}
 	},
 	methods: {

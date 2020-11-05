@@ -2,7 +2,8 @@
   <div id="app">
     <div v-if="currentUser" id="nav">
       <router-link to="/">Home</router-link> |
-      <a @click="logout">Logout</a>
+      <a @click="logout">Logout</a> |
+      <router-link to="/test">Test</router-link> 
     </div>
     <router-view/>
   </div>

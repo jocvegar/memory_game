@@ -4,10 +4,11 @@ import './registerServiceWorker'
 import router from './router'
 import {store} from './store'
 const fb = require("@/firebaseConfig.js");
+import VueFirestore from 'vue-firestore'
 import "./assets/scss/app.scss";
 
-
 Vue.config.productionTip = false
+Vue.use(VueFirestore)
 
 let app;
 

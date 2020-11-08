@@ -9,11 +9,11 @@
         </div>
         <br>
         <div>
-            <!-- currentUserState: {{currentUser.email}} -->
+            currentUserState: {{currentUser.email}}
         </div>
         <br>
         <div>
-            <!-- currentUserFB: {{users}} -->
+            <!-- users: {{users}} -->
         </div>
         <br>
         <!-- <div v-for="city in cities" :key="city.id">
@@ -22,15 +22,20 @@
         <br>
         <div>
             <!-- algo: {{algo}} -->
-            correo: {{correo}}
+            cityFirestore: {{cityFirestore}}
         </div>
         <br>
         <div>
-            city: {{city}}
+            <!-- city: {{city}} -->
+            <!-- cities_count: {{cities_count}} -->
+
+            userCount: {{userCount}}
         </div>
         <button @click="updateCity">
             ClickME
         </button>
+
+
     </div>
 </template>
 
@@ -44,59 +49,70 @@ export default {
         return {
             name: "JOSE",
             mountedData: "",
-            currentUserFB: {},
-            users: null,
-            cities: null,
+            // users: null,
+            // cities: null,
             algo: null,
             city: {},
-            correo: null
+            // cities_count: 0
         }
     },
     async mounted() {
         this.mountedData = "I was mounted"
-        this.getCity();
+        // this.getCity();
 
-        this.$binding("users", db.collection("users"))
-        .then((users) => {
-            let names = []
-            users.forEach(user => {
-                names.push(user.username)
-            })
-            this.algo = names 
-        })
+        // this.$binding("ciudades", db.collection("cities"))
+        // .then((ciudades) => {
+        //     let _ciudades = []
+        //     ciudades.forEach(ciudad => {
+        //         _ciudades.push(ciudad)
+        //     })
+        //     console.log("_ciudades", _ciudades.length)
+        //     this.cities_count = _ciudades.length
+        // })
+
+        // db.collection('cities').onSnapshot(snap => {
+        //     let foo = [];
+        //     snap.forEach(doc => {
+        //         foo.push(doc)
+        //     });
+        //     this.cities_count = foo.length
+        // });
     },
     computed: {
         ...mapState(["currentUser"]),
+        userCount: function() {
+            return this.miercolesUsers.length;
+        }
     },
     firestore () {
         return {
             // Collection
-            users: db.collection('users'),
+            miercolesUsers: db.collection('users'),
             // Doc
             cities: db.collection('cities'),
             // Doc
-            correo: db.collection('cities').doc('WeWEb075b1LDwxZ4I73x')
+            cityFirestore: db.collection('cities').doc('WeWEb075b1LDwxZ4I73x')
         }
     },
     methods: {
-        async getCity() {
+        // async getCity() {
 
-            // var cityRef = db.collection('users').doc('BJ');
+        //     // var cityRef = db.collection('users').doc('BJ');
 
-            // var setWithMerge = cityRef.set({
-            //     capital: true
-            // }, { merge: true });
-            let _this = this
-            let ciudad = db.collection("cities").doc('WeWEb075b1LDwxZ4I73x');
+        //     // var setWithMerge = cityRef.set({
+        //     //     capital: true
+        //     // }, { merge: true });
+        //     let _this = this
+        //     let ciudad = db.collection("cities").doc('WeWEb075b1LDwxZ4I73x');
 
-            ciudad.get().then(function(doc) {
+        //     ciudad.get().then(function(doc) {
 
-                _this.city = doc.data();
+        //         _this.city = doc.data();
 
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-        },
+        //     }).catch(function(error) {
+        //         console.log("Error getting document:", error);
+        //     });
+        // },
         updateCity() {
             let _this = this
             let ciudad = db.collection("cities").doc('WeWEb075b1LDwxZ4I73x');

@@ -1,5 +1,5 @@
-// import * as firebase from "firebase";  
-import firebase from 'firebase'
+import * as firebase from "firebase";  
+// import firebase from 'firebase'
 import 'firebase/firestore';    
 import 'firebase/auth';        
 const config = require("../config");
@@ -28,6 +28,7 @@ const usersCollection = db.collection("users");
 export {
   db,
   auth,
+  firebase,
   currentUser,
   usersCollection,
 };

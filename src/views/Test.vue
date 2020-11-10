@@ -1,126 +1,145 @@
 <template>
     <div>
         <div>
-            HOLA {{name}}
+            HOLA {{userProfile.username}}
+            <br>
+            <br>
+            Monto en gift cards: {{totalAmount}}
+            <hr>
+            <button @click="sendGiftCard()">
+                Enviar 100 a JOSE
+            </button>
+             <button @click="useFromGifCards()">
+                Gastar 100
+            </button>
+            
+            <ul>
+                <li v-for="(item, idx) in sortedLedger" :key="idx" 
+                    :class="item.type == 'withdrawal' ? 'withdrawal' : 'giftCard'">
+                    {{ item.amount}} | {{ item.createdAt | moment().toDate() }}
+                </li>
+            </ul>
         </div>
-        <br>
-        <div>
-            Mounted data {{mountedData}}
-        </div>
-        <br>
-        <div>
-            currentUserState: {{currentUser.email}}
-        </div>
-        <br>
-        <div>
-            <!-- users: {{users}} -->
-        </div>
-        <br>
-        <!-- <div v-for="city in cities" :key="city.id">
-                <li>{{city}}</li>
-        </div> -->
-        <br>
-        <div>
-            <!-- algo: {{algo}} -->
-            cityFirestore: {{cityFirestore}}
-        </div>
-        <br>
-        <div>
-            <!-- city: {{city}} -->
-            <!-- cities_count: {{cities_count}} -->
-
-            userCount: {{userCount}}
-        </div>
-        <button @click="updateCity">
-            ClickME
-        </button>
-
-
     </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-const { db, fb } = require("@/firebaseConfig.js");
+import moment from "moment"
+
+const { db, firebase } = require("@/firebaseConfig.js");
 
 export default {
     name: "test",
     data() {
         return {
             name: "JOSE",
-            mountedData: "",
-            // users: null,
-            // cities: null,
-            algo: null,
-            city: {},
-            // cities_count: 0
+            withdrawals: [],
+            giftCardsReceived: [],
+            giftCardLedger: {},
+            isMessage: false,
+            message: ""
         }
     },
     async mounted() {
-        this.mountedData = "I was mounted"
-        // this.getCity();
-
-        // this.$binding("ciudades", db.collection("cities"))
-        // .then((ciudades) => {
-        //     let _ciudades = []
-        //     ciudades.forEach(ciudad => {
-        //         _ciudades.push(ciudad)
-        //     })
-        //     console.log("_ciudades", _ciudades.length)
-        //     this.cities_count = _ciudades.length
-        // })
-
-        // db.collection('cities').onSnapshot(snap => {
-        //     let foo = [];
-        //     snap.forEach(doc => {
-        //         foo.push(doc)
-        //     });
-        //     this.cities_count = foo.length
-        // });
+        db.collection("giftCardLedger").where("user_id", "==", this.currentUser.uid)
+        .onSnapshot(querySnapshot => {
+            if(!querySnapshot.empty) {
+                this.giftCardLedger = Object.assign({id: querySnapshot.docs[0].id}, querySnapshot.docs[0].data())
+                this.giftCardsReceived = this.giftCardLedger.giftCardsReceived
+                this.withdrawals = this.giftCardLedger.withdrawals
+            }
+        });
     },
     computed: {
-        ...mapState(["currentUser"]),
-        userCount: function() {
-            return this.miercolesUsers.length;
-        }
-    },
-    firestore () {
-        return {
-            // Collection
-            miercolesUsers: db.collection('users'),
-            // Doc
-            cities: db.collection('cities'),
-            // Doc
-            cityFirestore: db.collection('cities').doc('WeWEb075b1LDwxZ4I73x')
-        }
-    },
-    methods: {
-        // async getCity() {
-
-        //     // var cityRef = db.collection('users').doc('BJ');
-
-        //     // var setWithMerge = cityRef.set({
-        //     //     capital: true
-        //     // }, { merge: true });
-        //     let _this = this
-        //     let ciudad = db.collection("cities").doc('WeWEb075b1LDwxZ4I73x');
-
-        //     ciudad.get().then(function(doc) {
-
-        //         _this.city = doc.data();
-
-        //     }).catch(function(error) {
-        //         console.log("Error getting document:", error);
-        //     });
-        // },
-        updateCity() {
-            let _this = this
-            let ciudad = db.collection("cities").doc('WeWEb075b1LDwxZ4I73x');
-            console.log("ciudad ", ciudad)
-            ciudad.update({
-                alerta: "resorte"
+        ...mapState(["currentUser", "userProfile"]),
+   
+        totalAmount: function() {
+            let giftCardsAmount = 0 
+            let withdrawlsAmount = 0 
+            
+            this.giftCardsReceived.forEach(giftCard => {
+                giftCardsAmount += giftCard.amount
             })
+
+            this.withdrawals.forEach(withdrawal => {
+                withdrawlsAmount += withdrawal.amount
+            })
+            return giftCardsAmount - withdrawlsAmount
+        },
+        ledger: function() {
+            let ledgerArray = []
+           
+            this.withdrawals.forEach((withdrawal) => {
+                ledgerArray.push({
+                    "type": "withdrawal",
+                    "amount": withdrawal.amount,
+                    "createdAt": withdrawal.createdAt
+                }) 
+            })
+
+            this.giftCardsReceived.forEach((giftCard) => {
+                ledgerArray.push({
+                    "type": "giftCard",
+                    "amount": giftCard.amount,
+                    "createdAt": giftCard.createdAt
+                }) 
+            })
+            return ledgerArray
+        },
+        sortedLedger: function() {
+            return this.ledger.slice().sort((a, b) => b.createdAt - a.createdAt)
+        }
+    },
+    // firestore () {
+    //     // return {
+    //     //     // // Doc
+    //     //     // cities: db.collection('cities'),
+    //     //     // // Doc
+    //     //     // cityFirestore: db.collection('cities').doc('WeWEb075b1LDwxZ4I73x')
+    //     // }
+    // },
+    methods: {
+        sendGiftCard() {
+            db.collection("giftCardLedger").doc(this.giftCardLedger.id).update({
+                giftCardsReceived: firebase.firestore.FieldValue.arrayUnion({
+                    amount: 50,
+                    createdAt: new Date(),
+                    fromUserId: this.currentUser.uid,
+                    productId: "product_id",
+                })
+            }).then(() => {
+                this.isMessage = true
+                this.message = "saved"
+            })
+        },
+        useFromGifCards() {
+            if(100 < this.totalAmount) {
+                db.collection("giftCardLedger").doc(this.giftCardLedger.id).update({
+                    withdrawals: firebase.firestore.FieldValue.arrayUnion({
+                        amount: 100,
+                        createdAt: new Date(),
+                    })
+                }).then(() => {
+                    this.isMessage = true
+                    this.message = "saved"
+                })
+            } else {
+                this.isMessage = true
+                this.message = "solo puedes gasta 10"
+
+            }
+            
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.withdrawal {
+    background: lightcoral;
+}
+.giftCard {
+    background: lightgreen;
+}
+</style>>

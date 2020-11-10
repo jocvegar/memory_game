@@ -9,6 +9,7 @@ import "./assets/scss/app.scss";
 
 Vue.config.productionTip = false
 Vue.use(VueFirestore)
+Vue.use(require('vue-moment'));
 
 let app;
 

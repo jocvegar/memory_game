@@ -10,7 +10,7 @@ fb.auth.onAuthStateChanged(firebaseUser => {
     store.dispatch("fetchUserProfile");
 
     fb.usersCollection.doc(firebaseUser.uid).onSnapshot(doc => {
-      store.commit("setUserProfile", doc.data());
+      store.commit("setUserProfile", Object.assign({id: doc.id}, doc.data()));
     });
   }
 });
@@ -38,7 +38,7 @@ export const store =  new Vuex.Store({
         .doc(state.currentUser.uid)
         .get()
         .then(res => {
-          commit("setUserProfile", res.data());
+          commit("setUserProfile", Object.assign({id: res.id}, res.data()));
         })
         .catch(err => {
           console.log(err);

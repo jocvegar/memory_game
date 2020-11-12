@@ -3,7 +3,8 @@
     <div v-if="currentUser" id="nav">
       <router-link to="/">Home</router-link> |
       <a @click="logout">Logout</a> |
-      <router-link to="/test">Test</router-link> 
+      <router-link to="/test">Test</router-link> |
+      <router-link to="/test2">Test 2</router-link> 
     </div>
     <router-view/>
   </div>

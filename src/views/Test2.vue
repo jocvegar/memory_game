@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <!-- {{userledger}} -->
         <h4 class="text-center">Monto en gift cards {{userProfile.giftCardBalance}}</h4>
         <div class="d-flex justify-content-around my-5">
             <button 
@@ -59,45 +60,51 @@ export default {
     data() {
         return {
             userledger: [],
-            lastMovement: {}
+            // lastMovement: {},
+            test: null
         }
     },
     created() {
-        this.fetchDB()
+        // this.fetchDB()
+        this.onSnapFetch()
         // this.$store.dispatch("fetchAllUsers");
+    },
+    mounted() {
+        setTimeout(() => {
+            this.test = this.userledger[0]
+        }, 1000);
     },
     computed: {
         ...mapState(["currentUser", "userProfile", "allUsers"]),
     },
     methods: {
         async sendGiftCard() {
-            const userFinalBalance = this.lastMovement.finalBalance + 500
+            const userFinalBalance = this.test.finalBalance + 500
             db.collection('giftCardsLedger2').add({
                 credit: 500,
                 createdAt: new Date(),
                 userId: this.currentUser.uid,                
                 fromUserId: this.currentUser.uid,  
-                startBalance: this.lastMovement.finalBalance,
+                startBalance: this.test.finalBalance,
                 finalBalance: userFinalBalance,
             }).then((doc) => {
-                console.log(doc)
-                this.fetchDB()
+                // this.fetchDB()
                 this.updateUserFinalBalance(userFinalBalance)
             }).catch((error) => {
                 console.log("error ", error)
             })
         },
         useGiftCard() {
-            const userFinalBalance = this.lastMovement.finalBalance - 500
+            const userFinalBalance = this.test.finalBalance - 500
             db.collection('giftCardsLedger2').add({
                 debit: 500,
                 createdAt: new Date(),
                 userId: this.currentUser.uid,                
                 fromUserId: this.currentUser.uid,  
-                startBalance: this.lastMovement.finalBalance,
+                startBalance: this.test.finalBalance,
                 finalBalance: userFinalBalance,
             }).then(() => {
-                this.fetchDB()
+                // this.fetchDB()
                 this.updateUserFinalBalance(userFinalBalance)
             }).catch((error) => {
                 console.log("error ", error)
@@ -130,7 +137,7 @@ export default {
                         startBalance: 0,
                         finalBalance: 0
                     }).then(()=> {
-                        this.fetchDB()
+                        // this.fetchDB()
                     }).catch((error) => {
                         console.log("error ", error)
                     })
@@ -139,7 +146,19 @@ export default {
             .catch(function(error) {
                 console.log("Error getting documents: ", error);
             });
-        }  
+        },
+        onSnapFetch() {
+            db.collection('giftCardsLedger2')
+            .where("userId", "==", this.currentUser.uid)
+            .orderBy("createdAt", "desc")
+            .onSnapshot(querySnapshot => {
+                var movements = [];
+                querySnapshot.forEach(function(doc) {
+                    movements.push(doc.data());
+                });
+                this.userledger = movements
+            });
+        }
     },
     filters: {
         moment: function (date) {

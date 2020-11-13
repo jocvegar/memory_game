@@ -19,6 +19,7 @@ export const store =  new Vuex.Store({
   state: {
     currentUser: null,
     userProfile: {},
+    allUsers: []
   },
   mutations: {
     setCurrentUser(state, val) {
@@ -27,11 +28,15 @@ export const store =  new Vuex.Store({
     setUserProfile(state, val) {
       state.userProfile = val;
     },
+    setAllUsers(state, val) {
+      state.allUsers = val;
+    },
   },
   actions: {
     clearData({ commit }) {
       commit("setCurrentUser", null);
       commit("setUserProfile", {});
+      commit("setAllUsers", []);
     },
     fetchUserProfile({ commit, state }) {
       fb.usersCollection
@@ -44,6 +49,21 @@ export const store =  new Vuex.Store({
           console.log(err);
         });
     },
+    fetchAllUsers({ commit, state }) {
+      const users = []
+      fb.usersCollection
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          users.push(Object.assign({id: doc.id}, doc.data()))
+        });
+        commit("setAllUsers", users)
+      })
+      .catch(function(error) {
+        console.log("Error getting documents: ", error);
+      });
+    },
+
     // updateProfile({ state }, data) {
     //   let first_name = data["first_name"];
     //   let last_name = data.last_name;

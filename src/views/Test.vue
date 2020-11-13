@@ -1,34 +1,52 @@
 <template>
-    <div>
-        <div>
-            HOLA {{userProfile.username}}
-            <br>
-            <br>
-            Monto en gift cards: {{totalAmount}}
-            <hr>
-            <button @click="sendGiftCard()">
-                Enviar 100 a JOSE
-            </button>
-             <button @click="useFromGifCards()">
-                Gastar 100
-            </button>
-            
-            <ul>
-                <li v-for="(item, idx) in sortedLedger" :key="idx" 
-                    :class="item.type == 'withdrawal' ? 'withdrawal' : 'giftCard'">
-                    {{ item.amount}} | {{ item.createdAt | moment().toDate() }}
-                </li>
-            </ul>
+    <div class="container">
+        <h4 class="text-center">Monto en gift cards {{totalAmount}}</h4>
+        <div class="d-flex justify-content-around my-5">
+            <button 
+                type="button" 
+                class="btn btn-success"
+                @click="sendGiftCard()">Enviar 100 a JOSE</button>
+            <button 
+                type="button" 
+                class="btn btn-danger"
+                @click="useFromGifCards()">Gastar 100</button>
         </div>
+
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Monton</th>
+                <th scope="col">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, idx) in sortedLedger" :key=idx 
+                    :class="item.type == 'withdrawal' ? 'red' : '' ">
+                    <th scope="row">{{idx + 1}}</th>
+                    <td>{{item.amount}}</td>
+                    <td>{{item.createdAt.toDate() | moment}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script>
+// calls to db:
+// get user ledger by userID     (1)
+// get allUsers to gift          (1)
+// write (debit or credit)       (1)
+// _________________________________
+// TOTAL:                        (3)
+// * no final balance saved on user doc
+// * final balance must be calcuted each time
+// * by difference between credits and debits
+// * better if always showing a ledger
+// * more data manipulation
 import { mapState } from "vuex";
 import moment from "moment"
-
 const { db, firebase } = require("@/firebaseConfig.js");
-
 export default {
     name: "test",
     data() {
@@ -127,19 +145,20 @@ export default {
             } else {
                 this.isMessage = true
                 this.message = "solo puedes gasta 10"
-
             }
-            
         }
-    }
+    },
+    filters: {
+        moment: function (date) {
+            return moment(date).format('LLLL')
+        }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
-.withdrawal {
-    background: lightcoral;
-}
-.giftCard {
-    background: lightgreen;
+@import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css";
+.red {
+    background-color: lightcoral;
 }
 </style>>

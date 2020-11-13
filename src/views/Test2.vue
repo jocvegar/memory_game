@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h4 class="text-center">Mi balance {{userProfile.giftCardBalance}}</h4>
+        <h4 class="text-center">Monto en gift cards {{userProfile.giftCardBalance}}</h4>
         <div class="d-flex justify-content-around my-5">
             <button 
                 type="button" 
@@ -39,6 +39,17 @@
 </template>
 
 <script>
+// calls to db:
+// get user ledgers by userID    (1)
+// get allUsers to gift          (1)
+// write (debit or credit)       (1)
+// write latest balance to user  (1)
+// _________________________________
+// TOTAL:                        (4)
+
+// * final balance saved on user doc
+// * better if unique value wants to be showed to user
+// * less data manipulation
 import { mapState } from "vuex";
 import moment from "moment"
 const { db, firebase } = require("@/firebaseConfig.js");
@@ -48,25 +59,25 @@ export default {
     data() {
         return {
             userledger: [],
-            lastCoso: {}
+            lastMovement: {}
         }
     },
     created() {
         this.fetchDB()
+        // this.$store.dispatch("fetchAllUsers");
     },
-
     computed: {
-        ...mapState(["currentUser", "userProfile"]),
+        ...mapState(["currentUser", "userProfile", "allUsers"]),
     },
     methods: {
         async sendGiftCard() {
-            const userFinalBalance = this.lastCoso.finalBalance + 500
+            const userFinalBalance = this.lastMovement.finalBalance + 500
             db.collection('giftCardsLedger2').add({
                 credit: 500,
                 createdAt: new Date(),
                 userId: this.currentUser.uid,                
                 fromUserId: this.currentUser.uid,  
-                startBalance: this.lastCoso.finalBalance,
+                startBalance: this.lastMovement.finalBalance,
                 finalBalance: userFinalBalance,
             }).then((doc) => {
                 console.log(doc)
@@ -77,13 +88,13 @@ export default {
             })
         },
         useGiftCard() {
-            const userFinalBalance = this.lastCoso.finalBalance - 500
+            const userFinalBalance = this.lastMovement.finalBalance - 500
             db.collection('giftCardsLedger2').add({
                 debit: 500,
                 createdAt: new Date(),
                 userId: this.currentUser.uid,                
                 fromUserId: this.currentUser.uid,  
-                startBalance: this.lastCoso.finalBalance,
+                startBalance: this.lastMovement.finalBalance,
                 finalBalance: userFinalBalance,
             }).then(() => {
                 this.fetchDB()
@@ -109,7 +120,7 @@ export default {
                         movements.push(doc.data())
                     });
                     this.userledger = movements
-                    this.lastCoso = movements[0]
+                    this.lastMovement = movements[0]
                 } else {
                     db.collection('giftCardsLedger2').add({
                         credit: 0,
@@ -139,8 +150,8 @@ export default {
 </script>
 
 <style>
-    @import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css";
-    .red {
-        background-color: lightcoral;
-    }
+@import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css";
+.red {
+    background-color: lightcoral;
+}
 </style>
